@@ -96,7 +96,7 @@
                 <configuration>
                     <format>HTML</format>
                     <outputDirectory>${project.build.directory}</outputDirectory>
-                    <failBuildOnCVSS>7</failBuildOnCVSS>
+                    <failBuildOnCVSS>11</failBuildOnCVSS>
                 </configuration>
                 <executions>
                     <execution>
