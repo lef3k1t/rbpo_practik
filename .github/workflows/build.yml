@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     container: maven:3.9-eclipse-temurin-21
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Build with Maven
@@ -31,7 +31,7 @@ jobs:
       security-events: write
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Set up Python
