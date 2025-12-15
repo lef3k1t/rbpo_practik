@@ -43,7 +43,8 @@ jobs:
         run: pip install semgrep
 
       - name: Semgrep Security Scan
-        run: semgrep --config p/default --sarif --output=semgrep.sarif
+        run: semgrep scan --config p/default --sarif --output semgrep.sarif .
+
 
       - name: Upload SARIF file
         uses: github/codeql-action/upload-sarif@v4
