@@ -1,56 +1,52 @@
-name: Build and SAST
+name: Java CI with Maven
 
 on:
   pull_request:
-    branches: [ main ]
+    branches: [ "main" ]
+  push:
+    branches: [ "main" ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    container:
-      image: maven:3.9.6-eclipse-temurin-21
-
+    container: maven:3.9-eclipse-temurin-21
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Maven
-        run: |
-          if [ -f "mvnw" ]; then
-            chmod +x mvnw
-          fi
-
       - name: Build with Maven
-        run: |
-          if [ -f "mvnw" ]; then
-            ./mvnw clean compile test package
-          else
-            mvn clean compile test package
-          fi
+        run: mvn clean package -DskipTests
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: java-app
-          path: ./target/*.jar
+          name: course-management-jar
+          path: target/*.jar
+          retention-days: 5
 
   sast:
+    needs: build
     runs-on: ubuntu-latest
-    needs: [build]
-    container:
-      image: returntocorp/semgrep:latest
+    permissions:
+      security-events: write
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Run Semgrep SAST scan
-        run: |
-          echo "Running Semgrep SAST scan..."
-          semgrep scan --config auto --sarif --output=semgrep-results.sarif .
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
 
-      - name: Upload SARIF report
+      - name: Install Semgrep
+        run: pip install semgrep
+
+      - name: Semgrep Security Scan
+        run: semgrep --config p/default --sarif --output=semgrep.sarif
+
+      - name: Upload SARIF file
         uses: github/codeql-action/upload-sarif@v4
         with:
-          sarif_file: semgrep-results.sarif
-          category: semgrep
+          sarif_file: semgrep.sarif
+        if: always()
