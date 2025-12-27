@@ -2,7 +2,7 @@ name: Web Fuzzing
 
 on:
   push:
-    branches: [ main, feature/github-fuzzing ]
+    branches: [ main, feature/fuzz ]
   pull_request:
     branches: [ main ]
 
